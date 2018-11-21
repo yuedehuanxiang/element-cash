@@ -4,11 +4,20 @@
   "description": "element admin",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node server.js",
+    "server": "nodemon server.js"
   },
   "author": "chenshuai",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.16.4"
+    "express": "^4.16.4",
+    "mongoose": "^5.3.13"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:yuedehuanxiang/element-cash.git"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.6"
   }
 }
