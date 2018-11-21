@@ -2,6 +2,7 @@
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
+const gravatar = require('gravatar');
 
 const User = require('../../models/user');
 
@@ -30,15 +31,20 @@ router.post('/register', (req, res) => {
                     email: '邮箱已被注册!'
                 });
             } else {
+                const avatar = gravatar.url(req.body.email, {
+                    s: '200',
+                    r: 'pg',
+                    d: 'mm'
+                });
                 const newUser = new User({
                     name: req.body.name,
                     email: req.body.email,
-                    // avatar,
+                    avatar,
                     password: req.body.password
                 });
 
                 bcrypt.genSalt(10, function (err, salt) {
-                    bcrypt.hash(newUser.password, salt, function (error, hash) {
+                    bcrypt.hash(newUser.password, salt, function (err, hash) {
                         // Store hash in your password DB.
                         if (err) throw err;
                         newUser.password = hash;
@@ -50,6 +56,39 @@ router.post('/register', (req, res) => {
             }
         })
 
+});
+
+// $route POST api/users/login
+// @desc 返回token jwt passport
+// @access public
+router.post('/login', (req, res) => {
+    const email = req.body.email;
+    const password = req.body.password;
+    // 查询数据库
+    User.findOne({
+            email
+        })
+        .then(user => {
+            if (!user) {
+                return res.status(404).json({
+                    email: '用户不存在'
+                })
+            }
+
+            // 匹配密码
+            bcrypt.compare(password, user.password)
+                .then(isMatch => {
+                    if (isMatch) {
+                        res.json({
+                            msg: 'success'
+                        })
+                    } else {
+                        return res.status(400).json({
+                            password: '密码错误!'
+                        })
+                    }
+                })
+        })
 });
 
 module.exports = router;
