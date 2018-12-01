@@ -4,6 +4,8 @@ const bodyParser = require('body-parser');
 const passport = require('passport');
 const app = express();
 
+//mac
+
 const users = require('./routes/api/users');
 const profiles = require('./routes/api/profiles');
 
